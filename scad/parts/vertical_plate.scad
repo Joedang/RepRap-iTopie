@@ -12,18 +12,31 @@ use     <../shapes.scad>
 
 // base plate
 module vertical_base_plate() {
-    translate([0, feet_height, 0]) {
-        render() difference() {
-            translate([0, sheet_thickness, 0])
-            rounded_square(vertical_plate_width, vertical_plate_height - feet_height - sheet_thickness, corner_radius = [vertical_plate_outer_corners[0], vertical_plate_outer_corners[1], 0, 0]);
-            translate([vertical_plate_borders[3], 0, 0])
-                y_mount(vertical_plate_inner_width, vertical_plate_inner_height - feet_height, [vertical_plate_inner_corners[0], vertical_plate_inner_corners[1], 0, 0]);
+    difference() {
+        union() {
+            translate([0, feet_height, 0]) {
+                render() difference() {
+                    translate([0, sheet_thickness, 0])
+                    rounded_square(vertical_plate_width, vertical_plate_height - feet_height - sheet_thickness, corner_radius = [vertical_plate_outer_corners[0], vertical_plate_outer_corners[1], 0, 0]);
+                    translate([vertical_plate_borders[3], 0, 0])
+                        y_mount(vertical_plate_inner_width, vertical_plate_inner_height - feet_height, [vertical_plate_inner_corners[0], vertical_plate_inner_corners[1], 0, 0]);
+                    
+                }
+            }
             
+            rounded_square(foot_width, feet_height + sheet_thickness, corner_radius = [0, 0, feet_corners[1], feet_corners[0]]);
+            translate([vertical_plate_width - foot_width, 0, 0])
+                rounded_square(foot_width, feet_height + sheet_thickness, corner_radius = [0, 0, feet_corners[3], feet_corners[2]]);
+        }
+        if(dogbone==true){
+            translate([dogbone_offset+foot_width,-dogbone_offset+feet_height+sheet_thickness,0])
+                circle(r=cutter_size);
+            translate([vertical_plate_width - foot_width, 0, 0])
+                translate([-dogbone_offset,-dogbone_offset+feet_height+sheet_thickness,0])
+                    color("Blue")
+                    circle(r=cutter_size);
         }
     }
-    rounded_square(foot_width, feet_height + sheet_thickness, corner_radius = [0, 0, feet_corners[1], feet_corners[0]]);
-    translate([vertical_plate_width - foot_width, 0, 0])
-        rounded_square(foot_width, feet_height + sheet_thickness, corner_radius = [0, 0, feet_corners[3], feet_corners[2]]);
 }
 
 // triangles screws holes
